@@ -14,6 +14,9 @@ import javax.swing.table.DefaultTableModel;
  */
 public class FormPeminjaman extends javax.swing.JFrame {
 
+    private ArrayList<Buku> bukuDipilih = new ArrayList<>();
+    private ArrayList<Buku> bukuTersedia = new ArrayList<>();
+    
 
     /**
      * Creates new customizer FormPeminjaman
@@ -56,8 +59,18 @@ public class FormPeminjaman extends javax.swing.JFrame {
         });
 
         jButtonPinjam.setText("Pinjam");
+        jButtonPinjam.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonPinjamActionPerformed(evt);
+            }
+        });
 
         jButtonBatal.setText("Batal");
+        jButtonBatal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonBatalActionPerformed(evt);
+            }
+        });
 
         jButtonKonfirmasi.setText("Konfirmasi");
         jButtonKonfirmasi.addActionListener(new java.awt.event.ActionListener() {
@@ -160,25 +173,118 @@ public class FormPeminjaman extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextFieldJudulActionPerformed
 
     private void jButtonKonfirmasiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonKonfirmasiActionPerformed
-        // TODO add your handling code here:
+        konfirmasiPeminjaman();
     }//GEN-LAST:event_jButtonKonfirmasiActionPerformed
 
+    private void konfirmasiPeminjaman() {
+    if (bukuDipilih.isEmpty()) {
+        DialogUI dialogUI = new DialogUI("Tidak ada buku yang dipilih");
+        dialogUI.pack();
+        dialogUI.setLocationRelativeTo(null);
+        dialogUI.setVisible(true);
+        return;
+    }
+
+    BukuDipinjam[] daftarBuku = new BukuDipinjam[bukuDipilih.size()];
+    for (int i = 0; i < bukuDipilih.size(); i++) {
+        daftarBuku[i] = new BukuDipinjam(bukuDipilih.get(i).judul, 7); // Default 7 hari
+    }
+
+    Perpustakaan.controllerPeminjaman.pinjam(daftarBuku);
+    }
+    
     private void jButtonCariMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonCariMouseClicked
         String judul = jTextFieldJudul.getText();
         Perpustakaan.controllerPeminjaman.cariBuku(judul);
     }//GEN-LAST:event_jButtonCariMouseClicked
 
-    public void display(ArrayList<Buku> bukuList) {
-        Object[] kolom = { "Judul" };
-        DefaultTableModel model = new DefaultTableModel(kolom, 0);
+    private void jButtonPinjamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPinjamActionPerformed
+        pindahkanBuku();
+    }//GEN-LAST:event_jButtonPinjamActionPerformed
 
-        for (Buku buku : bukuList) {
-            Object[] baris = { buku.judul };
-            model.addRow(baris);
+    private void jButtonBatalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBatalActionPerformed
+        batalPinjam();
+    }//GEN-LAST:event_jButtonBatalActionPerformed
+
+    private void pindahkanBuku() {
+    int selectedRow = jtBuku.getSelectedRow();
+    if (selectedRow != -1) {
+        String judulBuku = (String) jtBuku.getValueAt(selectedRow, 0);
+
+        // Cari buku di daftar yang tersedia
+        Buku buku = null;
+        for (Buku b : bukuTersedia) {
+            if (b.judul.equals(judulBuku)) {
+                buku = b;
+                break;
+            }
         }
 
-        jtBuku.setModel(model);
+        if (buku != null) {
+            bukuTersedia.remove(buku);
+            bukuDipilih.add(buku);
+
+            // Update tampilan tabel
+            tampilkanBukuTersedia();
+            tampilkanBukuDipilih();
+        }
     }
+}
+
+    
+    private void tampilkanBukuDipilih() {
+    Object[] kolom = { "Judul" };
+    DefaultTableModel model = new DefaultTableModel(kolom, 0);
+
+    for (Buku buku : bukuDipilih) {
+        model.addRow(new Object[] { buku.judul });
+    }
+
+    jTable2.setModel(model);
+    }
+    
+    public void display(ArrayList<Buku> bukuList) {
+    bukuTersedia.clear(); // Reset daftar buku yang tersedia
+    bukuTersedia.addAll(bukuList);
+
+    tampilkanBukuTersedia();
+}
+
+private void tampilkanBukuTersedia() {
+    Object[] kolom = { "Judul" };
+    DefaultTableModel model = new DefaultTableModel(kolom, 0);
+
+    for (Buku buku : bukuTersedia) {
+        model.addRow(new Object[] { buku.judul });
+    }
+
+    jtBuku.setModel(model);
+}
+
+private void batalPinjam() {
+    int selectedRow = jTable2.getSelectedRow();
+    if (selectedRow != -1) {
+        String judulBuku = (String) jTable2.getValueAt(selectedRow, 0);
+
+        // Cari buku di daftar yang sudah dipilih
+        Buku buku = null;
+        for (Buku b : bukuDipilih) {
+            if (b.judul.equals(judulBuku)) {
+                buku = b;
+                break;
+            }
+        }
+
+        if (buku != null) {
+            bukuDipilih.remove(buku);
+            bukuTersedia.add(buku);
+
+            // Perbarui tampilan tabel
+            tampilkanBukuTersedia();
+            tampilkanBukuDipilih();
+        }
+    }
+}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonBatal;

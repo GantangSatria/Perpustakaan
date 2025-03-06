@@ -40,13 +40,19 @@ public class PeminjamanController {
         }
     }
     
-    public void pinjam(BukuDipinjam[] BukuDipinjam[]){
-            PeminjamanManager peminjamanManager = new PeminjamanManager();
-    if (peminjamanManager.save(bukuDipinjam)) {
-        System.out.println("Peminjaman berhasil disimpan!");
-    } else {
-        System.out.println("Peminjaman gagal.");
-    }
+    public void pinjam(BukuDipinjam[] bukuDipinjam) {
+        PeminjamanManager peminjamanManager = new PeminjamanManager();
+        if (peminjamanManager.save(bukuDipinjam)) {
+            DialogUI dialogUI = new DialogUI("Peminjaman berhasil disimpan!");
+            dialogUI.pack();
+            dialogUI.setLocationRelativeTo(null);
+            dialogUI.setVisible(true);
+        } else {
+            DialogUI dialogUI = new DialogUI("Peminjaman gagal.");
+            dialogUI.pack();
+            dialogUI.setLocationRelativeTo(null);
+            dialogUI.setVisible(true);
+        }
     }
     
 }

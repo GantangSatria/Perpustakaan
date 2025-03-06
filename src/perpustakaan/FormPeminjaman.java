@@ -6,6 +6,7 @@ package perpustakaan;
 
 import java.util.ArrayList;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -16,6 +17,7 @@ public class FormPeminjaman extends javax.swing.JFrame {
 
     private ArrayList<Buku> bukuDipilih = new ArrayList<>();
     private ArrayList<Buku> bukuTersedia = new ArrayList<>();
+    private int lamaPeminjaman;
     
 
     /**
@@ -187,7 +189,7 @@ public class FormPeminjaman extends javax.swing.JFrame {
 
     BukuDipinjam[] daftarBuku = new BukuDipinjam[bukuDipilih.size()];
     for (int i = 0; i < bukuDipilih.size(); i++) {
-        daftarBuku[i] = new BukuDipinjam(bukuDipilih.get(i).judul, 7); // Default 7 hari
+        daftarBuku[i] = new BukuDipinjam(bukuDipilih.get(i).judul, lamaPeminjaman);
     }
 
     Perpustakaan.controllerPeminjaman.pinjam(daftarBuku);
@@ -199,34 +201,58 @@ public class FormPeminjaman extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonCariMouseClicked
 
     private void jButtonPinjamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPinjamActionPerformed
-        pindahkanBuku();
+        pinjamBuku();
     }//GEN-LAST:event_jButtonPinjamActionPerformed
 
     private void jButtonBatalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBatalActionPerformed
         batalPinjam();
     }//GEN-LAST:event_jButtonBatalActionPerformed
 
-    private void pindahkanBuku() {
+private void pinjamBuku() {
     int selectedRow = jtBuku.getSelectedRow();
     if (selectedRow != -1) {
         String judulBuku = (String) jtBuku.getValueAt(selectedRow, 0);
 
-        // Cari buku di daftar yang tersedia
-        Buku buku = null;
-        for (Buku b : bukuTersedia) {
-            if (b.judul.equals(judulBuku)) {
-                buku = b;
-                break;
+        // Tanya user berapa lama ingin meminjam
+        String input = JOptionPane.showInputDialog(this, 
+            "Berapa lama ingin meminjam buku (max 3 hari)?", 
+            "Input Lama Peminjaman", 
+            JOptionPane.QUESTION_MESSAGE);
+
+        if (input != null) {
+            try {
+                int lama = Integer.parseInt(input);
+
+                if (lama > 3) {
+                    DialogUI dialog = new DialogUI("Maaf, Anda tidak boleh meminjam lebih dari 3 hari.");
+                    dialog.setVisible(true);
+                } else {
+                    lamaPeminjaman = lama;
+                    Buku buku = null;
+                    for (Buku b : bukuTersedia) {
+                        if (b.judul.equals(judulBuku)) {
+                            buku = b;
+                            break;
+                        }
+                    }
+
+                    if (buku != null) {
+                        bukuTersedia.remove(buku);
+                        bukuDipilih.add(buku);
+
+                        // Perbarui tampilan tabel
+                        tampilkanBukuTersedia();
+                        tampilkanBukuDipilih();
+                    }
+                    BukuDipinjam bukuTerpinjam = new BukuDipinjam(judulBuku, lamaPeminjaman);
+
+                    PeminjamanManager manager = new PeminjamanManager();
+                    manager.save(new BukuDipinjam[]{bukuTerpinjam});
+                }
+            } catch (NumberFormatException e) {
+                 DialogUI dialog = new DialogUI("Masukkan angka yang valid!");
+                 dialog.setVisible(true);
             }
-        }
-
-        if (buku != null) {
-            bukuTersedia.remove(buku);
-            bukuDipilih.add(buku);
-
-            // Update tampilan tabel
-            tampilkanBukuTersedia();
-            tampilkanBukuDipilih();
         }
     }
 }

@@ -15,6 +15,8 @@ public class Perpustakaan {
     public static BukuProvider bukuProvider;
     public static FormPeminjaman formPeminjaman;
     public static PeminjamanController controllerPeminjaman;
+    public static FormLihatReview formReview;
+    public static ReviewController controllerReview;
     
     /**
      * @param args the command line arguments

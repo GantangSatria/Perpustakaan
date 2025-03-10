@@ -12,9 +12,14 @@ public class Perpustakaan {
     public static PencarianController controllerPencarian;
     public static FormPencarian formPencarian;
     public static DialogUI dialogUI;
-    public static BukuProvider bukuProvider;
+    public static BukuProvider bukuProvider = new BukuProvider(); 
     public static FormPeminjaman formPeminjaman;
     public static PeminjamanController controllerPeminjaman;
+    public static FormLihatReview formReview;
+    public static ReviewController controllerReview;
+    public static FormLihatReview FormLihatReview;
+    public static ReviewProvider reviewProvider = new ReviewProvider(); 
+    
     
     /**
      * @param args the command line arguments
@@ -31,6 +36,7 @@ public class Perpustakaan {
         
         
         // TODO code application logic here
+        
     }
     
 }

@@ -208,7 +208,15 @@ public class FormPeminjaman extends javax.swing.JFrame {
         batalPinjam();
     }//GEN-LAST:event_jButtonBatalActionPerformed
 
+private static final int MAKSIMAL_BUKU = 10; 
+
 private void pinjamBuku() {
+    if (bukuDipilih.size() >= MAKSIMAL_BUKU) { 
+        DialogUI dialog = new DialogUI("Jumlah buku yang dipinjam melebihi batas maksimal 10 buku.");
+        dialog.setVisible(true);
+        return;
+    }
+
     int selectedRow = jtBuku.getSelectedRow();
     if (selectedRow != -1) {
         String judulBuku = (String) jtBuku.getValueAt(selectedRow, 0);
@@ -221,13 +229,13 @@ private void pinjamBuku() {
 
         if (input != null) {
             try {
-                int lama = Integer.parseInt(input);
+                int lamaPeminjaman = Integer.parseInt(input);
 
-                if (lama > 3) {
+                if (lamaPeminjaman > 3) {
                     DialogUI dialog = new DialogUI("Maaf, Anda tidak boleh meminjam lebih dari 3 hari.");
                     dialog.setVisible(true);
                 } else {
-                    lamaPeminjaman = lama;
+                    // Cari buku di daftar tersedia
                     Buku buku = null;
                     for (Buku b : bukuTersedia) {
                         if (b.judul.equals(judulBuku)) {
@@ -256,6 +264,7 @@ private void pinjamBuku() {
         }
     }
 }
+
 
     
     private void tampilkanBukuDipilih() {

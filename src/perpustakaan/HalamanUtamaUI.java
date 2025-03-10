@@ -27,6 +27,7 @@ public class HalamanUtamaUI extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         menuPencarian = new javax.swing.JMenu();
         menuPeminjaman = new javax.swing.JMenu();
+        menuReview = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -45,6 +46,14 @@ public class HalamanUtamaUI extends javax.swing.JFrame {
             }
         });
         jMenuBar1.add(menuPeminjaman);
+
+        menuReview.setText("Review");
+        menuReview.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                menuReviewMouseClicked(evt);
+            }
+        });
+        jMenuBar1.add(menuReview);
 
         setJMenuBar(jMenuBar1);
 
@@ -71,10 +80,16 @@ public class HalamanUtamaUI extends javax.swing.JFrame {
         Perpustakaan.controllerPeminjaman = new PeminjamanController();
         Perpustakaan.controllerPeminjaman.showFormPeminjaman();
     }//GEN-LAST:event_MenuPeminjamanMouseClicked
+
+    private void menuReviewMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuReviewMouseClicked
+        Perpustakaan.controllerReview = new ReviewController();
+        Perpustakaan.controllerReview.showFormReview();
+    }//GEN-LAST:event_menuReviewMouseClicked
  
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenu menuPeminjaman;
     private javax.swing.JMenu menuPencarian;
+    private javax.swing.JMenu menuReview;
     // End of variables declaration//GEN-END:variables
 }

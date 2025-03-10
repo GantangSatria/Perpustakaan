@@ -83,7 +83,7 @@ public class HalamanUtamaUI extends javax.swing.JFrame {
 
     private void menuReviewMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuReviewMouseClicked
         Perpustakaan.controllerReview = new ReviewController();
-        Perpustakaan.controllerReview.showFormReview("Sherlock Holmes");
+        Perpustakaan.controllerReview.showFormReview();
     }//GEN-LAST:event_menuReviewMouseClicked
  
     // Variables declaration - do not modify//GEN-BEGIN:variables
